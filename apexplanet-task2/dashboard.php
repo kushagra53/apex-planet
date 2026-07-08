@@ -7,7 +7,21 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-$result = mysqli_query($conn, "SELECT * FROM students ORDER BY id DESC");
+$search = "";
+
+if (isset($_GET['search'])) {
+    $search = mysqli_real_escape_string($conn, $_GET['search']);
+
+    $result = mysqli_query($conn,
+        "SELECT * FROM students
+        WHERE name LIKE '%$search%'
+        OR email LIKE '%$search%'
+        OR course LIKE '%$search%'
+        ORDER BY id DESC");
+} else {
+    $result = mysqli_query($conn,
+        "SELECT * FROM students ORDER BY id DESC");
+}
 ?>
 
 <!DOCTYPE html>
@@ -25,6 +39,18 @@ $result = mysqli_query($conn, "SELECT * FROM students ORDER BY id DESC");
     <a href="logout.php">Logout</a>
 
     <br><br>
+
+   <form method="GET" style="margin-bottom:20px;">
+    <input
+        type="text"
+        name="search"
+        placeholder="Search by name, email or course"
+        value="<?php echo htmlspecialchars($search); ?>">
+
+    <button type="submit">Search</button>
+
+    <a href="dashboard.php">Clear</a>
+</form>
 
     <table border="1" cellpadding="10">
         <tr>
