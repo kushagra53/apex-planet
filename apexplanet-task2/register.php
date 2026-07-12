@@ -9,15 +9,21 @@ if (isset($_POST['register'])) {
     $email = trim($_POST['email']);
     $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    $check = mysqli_query($conn, "SELECT * FROM users WHERE email='$email' OR username='$username'");
+   $stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE email = ? OR username = ?");
+mysqli_stmt_bind_param($stmt, "ss", $email, $username);
+mysqli_stmt_execute($stmt);
+$check = mysqli_stmt_get_result($stmt);
 
     if (mysqli_num_rows($check) > 0) {
         $message = "Username or Email already exists!";
     } else {
-        $sql = "INSERT INTO users(username, email, password)
-                VALUES('$username', '$email', '$password')";
+        $stmt = mysqli_prepare($conn,
+    "INSERT INTO users(username, email, password)
+     VALUES(?, ?, ?)");
 
-        if (mysqli_query($conn, $sql)) {
+mysqli_stmt_bind_param($stmt, "sss", $username, $email, $password);
+
+       if (mysqli_stmt_execute($stmt)) {
             header("Location: login.php");
             exit();
         } else {

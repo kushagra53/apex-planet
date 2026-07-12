@@ -8,10 +8,15 @@ if (isset($_POST['login'])) {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
 
-    $result = mysqli_query($conn, "SELECT * FROM users WHERE email='$email'");
+  $stmt = mysqli_prepare($conn, "SELECT * FROM users WHERE email = ?");
+mysqli_stmt_bind_param($stmt, "s", $email);
+mysqli_stmt_execute($stmt);
 
-    if (mysqli_num_rows($result) == 1) {
-        $user = mysqli_fetch_assoc($result);
+$result = mysqli_stmt_get_result($stmt);
+
+if (mysqli_num_rows($result) == 1) {
+    $user = mysqli_fetch_assoc($result);
+}
 
         if (password_verify($password, $user['password'])) {
             $_SESSION['user_id'] = $user['id'];
