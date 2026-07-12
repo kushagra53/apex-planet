@@ -28,17 +28,20 @@ if (isset($_GET['search'])) {
 <html>
 <head>
     <title>Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 
-<div class="container">
-    <h2>Welcome, <?php echo $_SESSION['username']; ?></h2>
+<div class="container mt-5">
 
-    <a href="create.php">Add Student</a> |
-    <a href="logout.php">Logout</a>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Welcome, <?php echo $_SESSION['username']; ?></h2>
 
-    <br><br>
+        <div>
+            <a href="create.php" class="btn btn-success">Add Student</a>
+            <a href="logout.php" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
 
    <form method="GET" style="margin-bottom:20px;">
     <input
@@ -52,7 +55,7 @@ if (isset($_GET['search'])) {
     <a href="dashboard.php">Clear</a>
 </form>
 
-    <table border="1" cellpadding="10">
+    <table class="table table-bordered table-striped table-hover mt-3">
         <tr>
             <th>ID</th>
             <th>Name</th>
@@ -68,8 +71,13 @@ if (isset($_GET['search'])) {
             <td><?php echo $row['email']; ?></td>
             <td><?php echo $row['course']; ?></td>
             <td>
-                <a href="edit.php?id=<?php echo $row['id']; ?>">Edit</a> |
-                <a href="delete.php?id=<?php echo $row['id']; ?>">Delete</a>
+                <a href="edit.php?id=<?php echo $row['id']; ?>" class="btn btn-warning btn-sm">Edit</a>
+
+<a href="delete.php?id=<?php echo $row['id']; ?>"
+   class="btn btn-danger btn-sm"
+   onclick="return confirm('Delete this record?');">
+    Delete
+</a>
             </td>
         </tr>
         <?php } ?>
