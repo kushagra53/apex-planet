@@ -9,7 +9,13 @@ if (!isset($_SESSION['user_id'])) {
 
 $id = $_GET['id'];
 
-$result = mysqli_query($conn,"SELECT * FROM students WHERE id=$id");
+$stmt = mysqli_prepare($conn,
+    "SELECT * FROM students WHERE id = ?");
+
+mysqli_stmt_bind_param($stmt, "i", $id);
+mysqli_stmt_execute($stmt);
+
+$result = mysqli_stmt_get_result($stmt);
 $row = mysqli_fetch_assoc($result);
 
 if(isset($_POST['update'])){
@@ -17,9 +23,19 @@ if(isset($_POST['update'])){
     $email = $_POST['email'];
     $course = $_POST['course'];
 
-    mysqli_query($conn,"UPDATE students
-    SET name='$name', email='$email', course='$course'
-    WHERE id=$id");
+   $stmt = mysqli_prepare($conn,
+    "UPDATE students
+     SET name=?, email=?, course=?
+     WHERE id=?");
+
+mysqli_stmt_bind_param($stmt, "sssi",
+    $name,
+    $email,
+    $course,
+    $id
+);
+
+mysqli_stmt_execute($stmt);
 
     header("Location: dashboard.php");
     exit();

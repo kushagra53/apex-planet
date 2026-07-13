@@ -12,8 +12,11 @@ if(isset($_POST['save'])){
     $email = $_POST['email'];
     $course = $_POST['course'];
 
-    mysqli_query($conn,"INSERT INTO students(name,email,course)
-    VALUES('$name','$email','$course')");
+   $stmt = mysqli_prepare($conn,
+    "INSERT INTO students(name, email, course) VALUES (?, ?, ?)");
+
+mysqli_stmt_bind_param($stmt, "sss", $name, $email, $course);
+mysqli_stmt_execute($stmt);
 
     header("Location: dashboard.php");
     exit();

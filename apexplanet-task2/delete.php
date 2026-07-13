@@ -9,7 +9,11 @@ if (!isset($_SESSION['user_id'])) {
 
 $id = $_GET['id'];
 
-mysqli_query($conn,"DELETE FROM students WHERE id=$id");
+$stmt = mysqli_prepare($conn,
+    "DELETE FROM students WHERE id=?");
+
+mysqli_stmt_bind_param($stmt, "i", $id);
+mysqli_stmt_execute($stmt);
 
 header("Location: dashboard.php");
 exit();
